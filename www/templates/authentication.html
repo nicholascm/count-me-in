@@ -1,0 +1,21 @@
+<ion-view view-title="Authentication"> 
+    <ion-content>
+        <h3 class="padding text-center">Sign up!</h3> 
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Name</span>
+                <input type="text" ng-model = "auth.name">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">E-mail</span>
+                <input type="email" ng-model = "auth.username">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Password</span>
+                <input type="password" ng-model = "auth.password">
+            </label>
+        </div>
+    <button class = "button button-block button-positive" ng-click="auth.signup()">Sign up!</button>
+    <button class="button button-block button-clear button-positive" ng-click = "auth.login()">Sign-in instead</a>
+</ion-content>
+</ion-view>

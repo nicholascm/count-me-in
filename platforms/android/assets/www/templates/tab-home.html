@@ -1,0 +1,27 @@
+﻿<ion-view view-title="Home"> 
+    <ion-content>
+        <h3 class="padding text-center">Places in {{Ctrl.Zipcode}}</h3>
+        <ion-list>
+            <ion-item ng-repeat="event in Ctrl.events">
+                <ion-option-button ng-click="Ctrl.updateStatusOnEvent(event.id, 'Going')" class="button-balanced">Yes</ion-option-button>
+                <ion-option-button ng-click="Ctrl.updateStatusOnEvent(event.id, 'Not Going')" class="button-assertive">No</ion-option-button>
+                <ion-option-button ng-click="Ctrl.updateStatusOnEvent(event.id, 'Maybe')" class="button-energized">?</ion-option-button>
+                <p>{{event.description}}</p>
+                <p>{{event.attendees}} Going on {{event.date}}  
+                    <i ng-show="event.status=='Going'" class="icon ion-checkmark-circled balanced"></i>
+                    <i ng-show="event.status=='Not Going'" class = "icon ion-close-circled assertive"></i>
+                    <i ng-show="event.status=='Maybe'" class="icon ion-help-circled energized"></i>
+                </p>
+                    
+              </ion-item> 
+        </ion-list>
+
+                <a href = "#/tab/home/search" class="button button-block button-balanced">
+                   Go Somewhere Else
+                </a>
+
+
+    </ion-content>
+
+</ion-view>
+    

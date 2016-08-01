@@ -1,0 +1,19 @@
+﻿<ion-view view-title="Find Somewhere to Go">
+    <ion-content>
+        <div class="list list-inset">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input ng-model ="Srch.searchText" type="text">
+            </label>
+        </div>      
+        
+        <div class="list">
+
+            <a ng-repeat="result in Srch.searchResults" class="item item-thumbnail-left" href="#/tab/event">
+                <img src="{{result.image}}">
+                <h2>{{result.name}}</h2>
+                <p>{{result.description}}</p>
+            </a>
+        </div>  
+    </ion-content>
+</ion-view>

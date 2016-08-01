@@ -1,0 +1,26 @@
+﻿{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "out": "www/js/appBundle.js",
+    "target": "es5"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "source/app.ts",
+    "typings/tsd.d.ts",
+    "source/controllers.ts",
+    "source/homeController.ts",
+    "source/SearchController.ts", 
+    "source/EventController.ts", 
+    "source/controllers/AuthController.ts", 
+    "source/controllers/AccountController.ts", 
+    "source/services/EventService.ts", 
+    "source/services/AuthService.ts"
+  ]
+}
