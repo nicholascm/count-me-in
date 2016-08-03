@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-const eventApp = angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services']); 
+const eventApp = angular.module('starter', ['ionic', 'ngStorage']); 
 
 eventApp
 

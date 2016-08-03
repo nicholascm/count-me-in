@@ -24,10 +24,15 @@
         }
 
         public testAuthRoute() {
+            if(this.servAuth.userLoggedIn()) {
+            console.log(this.servAuth.getToken()); 
             this.servAuth.testRoute().then(
                 data => console.log(data), 
                 error => console.log(error)  
             )
+            } else {
+                console.log('not logged in'); 
+            }
         }
 
         public showNoEventMessage() {

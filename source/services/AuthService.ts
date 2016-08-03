@@ -50,8 +50,18 @@ class AuthService {
         }); 
     }
 
-    public getToken(): Object {
-        return this.$localStorage.token.token; 
+    public userLoggedIn():boolean {
+        if (this.$localStorage.token == "") {
+            return false; 
+        } 
+        return true;     
+    }
+
+    public getToken(): string {
+        if (this.$localStorage.token == ""){
+            console.log("user not logged in"); 
+        }
+        return this.$localStorage.token.data.token; 
     }
 }
 

@@ -14,7 +14,6 @@
   "files": [
     "source/app.ts",
     "typings/tsd.d.ts",
-    "source/controllers.ts",
     "source/homeController.ts",
     "source/SearchController.ts", 
     "source/EventController.ts", 

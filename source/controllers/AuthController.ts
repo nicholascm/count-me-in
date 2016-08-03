@@ -1,8 +1,8 @@
 class AuthController { 
     
-    public static AngularDependencies = ['AuthService', '$location', AuthController]; 
+    public static AngularDependencies = ['AuthService','$ionicLoading', '$location', AuthController]; 
 
-    constructor(private servAuth: AuthService, private $location) {
+    constructor(private servAuth: AuthService, private $ionicLoading, private $location) {
         
     }
 
@@ -19,17 +19,24 @@ class AuthController {
     }
 
     private login() {
+        this.$ionicLoading.show({
+            template: "Logging you in"
+        }); 
         this.servAuth.login({
             name: this.name, 
             email: this.username, 
             password: this.password
         }).then(
             (data) => {
+                this.$ionicLoading.hide(); 
                 console.log('success', data); 
                 this.servAuth.storeToken(data); 
-                this.$location('/#/tab/home'); 
+                this.$location.path('/#/tab/home'); 
             }, 
-            (e)=> console.log('fail', e)); 
+            (e)=>  {
+                console.log('fail', e); 
+                this.$ionicLoading.hide(); 
+            });
     }
 }
 
