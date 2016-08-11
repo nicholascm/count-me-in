@@ -5,11 +5,11 @@ interface IEventSearch {
 
 class EventService {
 
-    public static angularDependencies = ['$http', EventService]; 
+    public static angularDependencies = ['$http', EventService, AuthService]; 
 
     protected APIURL: string = 'http://events.app/api/'; 
 
-    constructor(private $http: ng.IHttpService) {
+    constructor(private $http: ng.IHttpService, private servAuth: AuthService) {
 
     }
 
@@ -20,6 +20,15 @@ class EventService {
             params: data
         }); 
 
+    }
+    
+    //TODO: Fix this piece so that the current events for the user for the current day can be shown - need to send user_id with the request for the API 
+
+    getUserEvents () {
+        return this.$http({
+            method: "GET", 
+            url: this.APIURL+'events/'+ this.servAuth.getUserInfo().id; 
+        }
     }
 }
 

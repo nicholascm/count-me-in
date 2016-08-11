@@ -9,21 +9,16 @@
             this.testAuthRoute(); 
         }; 
 
-        public header: string = "My Events";
+        private header: string = "My Events";
 
-        public Zipcode: string = "347"; 
+        private Zipcode: string = "347"; 
 
-        public newEvent(alert: string): string {
-            return "hey"; 
-            //alert("NEW"); 
-        }; 
-
-        public updateStatusOnEvent(id, status) {
+        private updateStatusOnEvent(id, status) {
             let eventToUpdate = this.events.filter((event) => event.id == id); 
             eventToUpdate[0].status = status; 
         }
 
-        public testAuthRoute() {
+        private testAuthRoute() {
             if(this.servAuth.userLoggedIn()) {
             console.log(this.servAuth.getToken()); 
             this.servAuth.testRoute().then(
@@ -35,25 +30,13 @@
             }
         }
 
-        public showNoEventMessage() {
+        private showNoEventMessage() {
             this.events.length == 0 ? true : false; 
         }
 
-        public events = [/*{
-            "id": "1", 
-            "description": "Description of the event to go down",
-            "location": "Buddy's Pizza",
-            "date": "3/31/2016",
-            "status": "Going", 
-            "attendees": "3"
-        },
-            {   "id":  "2", 
-                "description": "Another description of the event happening",
-                "location": "Jim's Barber Shop",
-                "date": "3/31/2016",
-                "status": "Going", 
-                "attendees": "9"
-            } */]
+        //this will make a call to the event service for the user who is logged in 
+        private events = []; 
+
     }
 
 eventApp.controller('HomeController', HomeController.AngularDependencies); 

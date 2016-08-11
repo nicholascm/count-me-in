@@ -30,7 +30,8 @@ class AuthController {
             (data) => {
                 this.$ionicLoading.hide(); 
                 console.log('success', data); 
-                this.servAuth.storeToken(data); 
+                this.servAuth.storeUser(data); 
+
                 this.$location.path('/#/tab/home'); 
             }, 
             (e)=>  {
@@ -41,3 +42,4 @@ class AuthController {
 }
 
 eventApp.controller('AuthController', AuthController.AngularDependencies); 
+

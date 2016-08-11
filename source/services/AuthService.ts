@@ -34,9 +34,10 @@ class AuthService {
         }); 
     }
 
-    public storeToken(token: any) {
-        this.$localStorage.token = token; 
+    public storeUser(user: any) {
+        this.$localStorage.user = user; 
     }
+
 
     //route only here for testing use of authentication-required endpoints - doesn't belong here
 
@@ -51,7 +52,7 @@ class AuthService {
     }
 
     public userLoggedIn():boolean {
-        if (this.$localStorage.token == "") {
+        if (this.$localStorage.user == "") {
             return false; 
         } 
         return true;     
@@ -61,7 +62,11 @@ class AuthService {
         if (this.$localStorage.token == ""){
             console.log("user not logged in"); 
         }
-        return this.$localStorage.token.data.token; 
+        return this.$localStorage.user.data.token; 
+    }
+
+    public getUserInfo(): string { 
+        return this.$localStorage.user.data.user; 
     }
 }
 

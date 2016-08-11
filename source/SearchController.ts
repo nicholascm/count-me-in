@@ -1,8 +1,6 @@
 ﻿interface ISearchResults {
-    data: {
-        businesses: any
-    }
-}
+    data: any 
+} 
 
 class SearchController {
 
@@ -34,43 +32,16 @@ class SearchController {
         }); 
         
         this.eventService.getEvents({
-                search_term: "chinese", 
+                search_term: "burgers", 
                 location: this.searchText }).then(
                 (data: ISearchResults)  => { 
                     console.log(data); 
-                    this.searchResults = data.data.businesses; 
+                    this.searchResults = data.data; 
                     this.$ionicLoading.hide() 
                 }, error => { 
                     console.log(error); 
                     this.$ionicLoading.hide();  
                 }); 
-    }
-
-   
-    public getLocations(text: string) {
-        return [
-            {
-                "name": "Bob's Pizza",
-                "address": "33 Billygoat Street",
-                "summary": "love this place!!!",
-                "id": "1",
-                "image": "cover.jpg"
-            },
-            {
-                "name": "Bob's Pizza",
-                "address": "33 Billygoat Street",
-                "summary": "love this place!!!",
-                "id": "1",
-                "image": "cover.jpg"
-            },
-            {
-                "name": "Bob's Pizza",
-                "address": "33 Billygoat Street",
-                "summary": "love this place!!!",
-                "id": "1",
-                "image": "cover.jpg"
-            }
-        ]; 
     }
 
 }
