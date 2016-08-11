@@ -6,13 +6,13 @@
                 <input ng-model ="Srch.searchText" type="text">
             </label>
         </div>      
-        
         <div class="list">
 
             <a ng-repeat="result in Srch.searchResults" class="item item-thumbnail-left" href="#/tab/event">
                 <img src="{{result.image_url}}">
                 <h2>{{result.name}}</h2>
                 <p>{{result.snippet_text}}</p>
+                <p>People Going Tonight: {{result.attendees.length}}</p>
             </a>
         </div>
     </ion-content>
