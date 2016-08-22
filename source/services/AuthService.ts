@@ -38,7 +38,6 @@ class AuthService {
         this.$localStorage.user = user; 
     }
 
-
     //route only here for testing use of authentication-required endpoints - doesn't belong here
 
     public testRoute() {
@@ -59,15 +58,17 @@ class AuthService {
     }
 
     public getToken(): string {
-        if (this.$localStorage.token == ""){
+        if (this.$localStorage.user == ""){
             console.log("user not logged in"); 
         }
         return this.$localStorage.user.data.token; 
     }
-
-    public getUserInfo(): string { 
-        return this.$localStorage.user.data.user; 
-    }
+    //TODO: Make this so we aren't storing sensitive information from the server, also fix the server not to provide it!
+    public getUserInfo() { 
+        return this.$localStorage.user.data.user[0]; 
+    } 
 }
 
 eventApp.service('AuthService', AuthService.angularDependencies); 
+
+

@@ -4,7 +4,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-var eventApp = angular.module('starter', ['ionic', 'ngStorage', 'starter.controllers', 'starter.services']);
+var eventApp = angular.module('starter', ['ionic', 'ngStorage']);
 eventApp
     .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
@@ -90,63 +90,49 @@ eventApp
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/tab/home');
 });
-angular.module('starter.controllers', [])
-    .controller('DashCtrl', function ($scope) { })
-    .controller('ChatsCtrl', function ($scope, Chats) {
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
-    $scope.chats = Chats.all();
-    $scope.remove = function (chat) {
-        Chats.remove(chat);
-    };
-})
-    .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
-    $scope.chat = Chats.get($stateParams.chatId);
-})
-    .controller('AccountCtrl', function ($scope) {
-    $scope.settings = {
-        enableFriends: true
-    };
-});
 /// <reference path="../typings/angularjs/angular.d.ts" />
 var HomeController = (function () {
-    function HomeController(servAuth) {
+    function HomeController(servAuth, eventServ) {
         this.servAuth = servAuth;
+        this.eventServ = eventServ;
         this.header = "My Events";
         this.Zipcode = "347";
+        //this will make a call to the event service for the user who is logged in 
         this.events = [];
         this.testAuthRoute();
+        this.getUserEvents();
     }
-    ;
-    HomeController.prototype.newEvent = function (alert) {
-        return "hey";
-        //alert("NEW"); 
-    };
     ;
     HomeController.prototype.updateStatusOnEvent = function (id, status) {
         var eventToUpdate = this.events.filter(function (event) { return event.id == id; });
         eventToUpdate[0].status = status;
     };
     HomeController.prototype.testAuthRoute = function () {
-        this.servAuth.testRoute().then(function (data) { return console.log(data); }, function (error) { return console.log(error); });
+        if (this.servAuth.userLoggedIn()) {
+            console.log(this.servAuth.getToken());
+            this.servAuth.testRoute().then(function (data) { return console.log(data); }, function (error) { return console.log(error); });
+        }
+        else {
+            console.log('not logged in');
+        }
     };
     HomeController.prototype.showNoEventMessage = function () {
         this.events.length == 0 ? true : false;
     };
-    HomeController.AngularDependencies = ['AuthService', HomeController];
+    HomeController.prototype.getUserEvents = function () {
+        this.eventServ.getUserEvents().then(function (response) { return console.log(response); }, function (error) { return console.log(error); });
+    };
+    HomeController.AngularDependencies = ['AuthService', 'EventService', HomeController];
     return HomeController;
 }());
 eventApp.controller('HomeController', HomeController.AngularDependencies);
 var SearchController = (function () {
-    function SearchController($scope, $ionicLoading, eventService) {
+    function SearchController($scope, $ionicLoading, $location, eventService, servAuth) {
         var _this = this;
         this.$ionicLoading = $ionicLoading;
+        this.$location = $location;
         this.eventService = eventService;
+        this.servAuth = servAuth;
         this.searchResults = [];
         $scope.$watch(function () { return _this.searchText; }, function (newValue, oldValue) {
             if (newValue.length == 5) {
@@ -161,48 +147,41 @@ var SearchController = (function () {
         });
     }
     ;
+    SearchController.prototype.findOrCreateEvent = function (yelp_id) {
+        var _this = this;
+        if (this.servAuth.userLoggedIn()) {
+            this.eventService.findOrCreateEvent({
+                yelp_id: yelp_id,
+                user_id: 5
+            }).then(function (data) {
+                console.log(data);
+                _this.$location.path('/#/tab/home');
+            }, function (error) {
+                console.log(error);
+            });
+        }
+        else {
+            alert('You need to be signed in in order to attend events.');
+        }
+    };
     SearchController.prototype.getYelpResults = function () {
         var _this = this;
         this.$ionicLoading.show({
             template: 'Hold up while we search the globe...'
         });
         this.eventService.getEvents({
-            search_term: "chinese",
-            location: this.searchText }).then(function (data) {
-            console.log(data);
-            _this.searchResults = data.data.businesses;
+            search_term: "burgers",
+            location: this.searchText
+        }).then(function (response) {
+            console.log(response.data);
+            _this.searchResults = response.data;
             _this.$ionicLoading.hide();
         }, function (error) {
             console.log(error);
             _this.$ionicLoading.hide();
         });
     };
-    SearchController.prototype.getLocations = function (text) {
-        return [
-            {
-                "name": "Bob's Pizza",
-                "address": "33 Billygoat Street",
-                "summary": "love this place!!!",
-                "id": "1",
-                "image": "cover.jpg"
-            },
-            {
-                "name": "Bob's Pizza",
-                "address": "33 Billygoat Street",
-                "summary": "love this place!!!",
-                "id": "1",
-                "image": "cover.jpg"
-            },
-            {
-                "name": "Bob's Pizza",
-                "address": "33 Billygoat Street",
-                "summary": "love this place!!!",
-                "id": "1",
-                "image": "cover.jpg"
-            }
-        ];
-    };
-    SearchController.AngularDependencies = ['$scope', '$ionicLoading', 'EventService', SearchController];
+    SearchController.AngularDependencies = ['$scope', '$ionicLoading', '$location', 'EventService', 'AuthService', SearchController];
     return SearchController;
 }());
 eventApp.controller('SearchController', SearchController.AngularDependencies);
@@ -214,8 +193,9 @@ var EventController = (function () {
     return EventController;
 }());
 var AuthController = (function () {
-    function AuthController(servAuth, $location) {
+    function AuthController(servAuth, $ionicLoading, $location) {
         this.servAuth = servAuth;
+        this.$ionicLoading = $ionicLoading;
         this.$location = $location;
     }
     AuthController.prototype.signup = function () {
@@ -227,17 +207,24 @@ var AuthController = (function () {
     };
     AuthController.prototype.login = function () {
         var _this = this;
+        this.$ionicLoading.show({
+            template: "Logging you in"
+        });
         this.servAuth.login({
             name: this.name,
             email: this.username,
             password: this.password
         }).then(function (data) {
+            _this.$ionicLoading.hide();
             console.log('success', data);
-            _this.servAuth.storeToken(data);
-            _this.$location('/#/tab/home');
-        }, function (e) { return console.log('fail', e); });
+            _this.servAuth.storeUser(data);
+            _this.$location.path('/#/tab/home');
+        }, function (e) {
+            console.log('fail', e);
+            _this.$ionicLoading.hide();
+        });
     };
-    AuthController.AngularDependencies = ['AuthService', '$location', AuthController];
+    AuthController.AngularDependencies = ['AuthService', '$ionicLoading', '$location', AuthController];
     return AuthController;
 }());
 eventApp.controller('AuthController', AuthController.AngularDependencies);
@@ -254,8 +241,9 @@ var AccountController = (function () {
 }());
 eventApp.controller('AccountController', AccountController.AngularDependencies);
 var EventService = (function () {
-    function EventService($http) {
+    function EventService($http, servAuth) {
         this.$http = $http;
+        this.servAuth = servAuth;
         this.APIURL = 'http://events.app/api/';
     }
     EventService.prototype.getEvents = function (data) {
@@ -265,7 +253,23 @@ var EventService = (function () {
             params: data
         });
     };
-    EventService.angularDependencies = ['$http', EventService];
+    //TODO: Fix this piece so that the current events for the user for the current day can be shown - need to send user_id with the request for the API 
+    EventService.prototype.getUserEvents = function () {
+        console.log(this.servAuth.getUserInfo().id);
+        return this.$http({
+            method: "GET",
+            url: this.APIURL + 'events/search/' + this.servAuth.getUserInfo().id
+        });
+    };
+    //TODO: use this service (unfinished) to add new events after the search
+    EventService.prototype.findOrCreateEvent = function (data) {
+        return this.$http({
+            method: "POST",
+            url: this.APIURL + 'events',
+            data: data
+        });
+    };
+    EventService.angularDependencies = ['$http', 'AuthService', EventService];
     return EventService;
 }());
 eventApp.service('EventService', EventService.angularDependencies);
@@ -292,8 +296,8 @@ var AuthService = (function () {
             data: credentials
         });
     };
-    AuthService.prototype.storeToken = function (token) {
-        this.$localStorage.token = token;
+    AuthService.prototype.storeUser = function (user) {
+        this.$localStorage.user = user;
     };
     //route only here for testing use of authentication-required endpoints - doesn't belong here
     AuthService.prototype.testRoute = function () {
@@ -305,8 +309,21 @@ var AuthService = (function () {
             }
         });
     };
+    AuthService.prototype.userLoggedIn = function () {
+        if (this.$localStorage.user == "") {
+            return false;
+        }
+        return true;
+    };
     AuthService.prototype.getToken = function () {
-        return this.$localStorage.token.token;
+        if (this.$localStorage.user == "") {
+            console.log("user not logged in");
+        }
+        return this.$localStorage.user.data.token;
+    };
+    //TODO: Make this so we aren't storing sensitive information from the server, also fix the server not to provide it!
+    AuthService.prototype.getUserInfo = function () {
+        return this.$localStorage.user.data.user[0];
     };
     AuthService.angularDependencies = ['$http', '$localStorage', AuthService];
     return AuthService;

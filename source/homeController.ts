@@ -2,11 +2,13 @@
 
  class HomeController {
 
-        public static AngularDependencies = ['AuthService', HomeController];
+        public static AngularDependencies = ['AuthService', 'EventService', HomeController];
 
-        constructor(private servAuth: AuthService) {
+        constructor(private servAuth: AuthService, private eventServ: EventService) {
             
             this.testAuthRoute(); 
+
+            this.getUserEvents(); 
         }; 
 
         private header: string = "My Events";
@@ -32,6 +34,13 @@
 
         private showNoEventMessage() {
             this.events.length == 0 ? true : false; 
+        }
+
+        public getUserEvents() {
+            this.eventServ.getUserEvents().then(
+                response => console.log(response), 
+                error => console.log(error)
+            );
         }
 
         //this will make a call to the event service for the user who is logged in 
