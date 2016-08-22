@@ -92,14 +92,13 @@ eventApp
 });
 /// <reference path="../typings/angularjs/angular.d.ts" />
 var HomeController = (function () {
-    function HomeController(servAuth, eventServ) {
+    function HomeController(servAuth, $ionicLoading, eventServ) {
+        //this.testAuthRoute(); 
         this.servAuth = servAuth;
+        this.$ionicLoading = $ionicLoading;
         this.eventServ = eventServ;
         this.header = "My Events";
         this.Zipcode = "347";
-        //this will make a call to the event service for the user who is logged in 
-        this.events = [];
-        this.testAuthRoute();
         this.getUserEvents();
     }
     ;
@@ -116,13 +115,21 @@ var HomeController = (function () {
             console.log('not logged in');
         }
     };
-    HomeController.prototype.showNoEventMessage = function () {
-        this.events.length == 0 ? true : false;
-    };
     HomeController.prototype.getUserEvents = function () {
-        this.eventServ.getUserEvents().then(function (response) { return console.log(response); }, function (error) { return console.log(error); });
+        var _this = this;
+        this.$ionicLoading.show({
+            template: 'Getting you all set up...'
+        });
+        this.eventServ.getUserEvents().then(function (response) {
+            console.log(response);
+            _this.events = response.data;
+            _this.$ionicLoading.hide();
+        }, function (error) {
+            console.log(error);
+            _this.$ionicLoading.hide();
+        });
     };
-    HomeController.AngularDependencies = ['AuthService', 'EventService', HomeController];
+    HomeController.AngularDependencies = ['AuthService', '$ionicLoading', 'EventService', HomeController];
     return HomeController;
 }());
 eventApp.controller('HomeController', HomeController.AngularDependencies);
@@ -152,7 +159,7 @@ var SearchController = (function () {
         if (this.servAuth.userLoggedIn()) {
             this.eventService.findOrCreateEvent({
                 yelp_id: yelp_id,
-                user_id: 5
+                user_id: this.servAuth.getUserInfo().id
             }).then(function (data) {
                 console.log(data);
                 _this.$location.path('/#/tab/home');

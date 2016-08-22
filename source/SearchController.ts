@@ -26,15 +26,16 @@ class SearchController {
 
     private searchResults = []; 
     
-    public findOrCreateEvent(yelp_id: number) {
+    public findOrCreateEvent(yelp_id: string) {
         if(this.servAuth.userLoggedIn()) {
             this.eventService.findOrCreateEvent({
                 yelp_id: yelp_id, 
-                user_id: 5
+                user_id: this.servAuth.getUserInfo().id
             }).then(
                 (data) => {
                     console.log(data);
-                    this.$location.path('/#/tab/home'); }, 
+                    this.$location.path('/#/tab/home');    
+             }, 
                 (error) => {
                     console.log(error); }
                 );

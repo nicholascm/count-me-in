@@ -2,11 +2,11 @@
 
  class HomeController {
 
-        public static AngularDependencies = ['AuthService', 'EventService', HomeController];
+        public static AngularDependencies = ['AuthService', '$ionicLoading','EventService', HomeController];
 
-        constructor(private servAuth: AuthService, private eventServ: EventService) {
+        constructor(private servAuth: AuthService, private $ionicLoading, private eventServ: EventService) {
             
-            this.testAuthRoute(); 
+            //this.testAuthRoute(); 
 
             this.getUserEvents(); 
         }; 
@@ -32,19 +32,26 @@
             }
         }
 
-        private showNoEventMessage() {
-            this.events.length == 0 ? true : false; 
-        }
 
         public getUserEvents() {
+        this.$ionicLoading.show({
+            template: 'Getting you all set up...'
+        }); 
             this.eventServ.getUserEvents().then(
-                response => console.log(response), 
-                error => console.log(error)
+                (response) => {
+                    console.log(response); 
+                    this.events = response.data; 
+                    this.$ionicLoading.hide(); 
+                }, 
+                error => {
+                    console.log(error)
+                    this.$ionicLoading.hide(); 
+                }
             );
         }
 
         //this will make a call to the event service for the user who is logged in 
-        private events = []; 
+        private events; 
 
     }
 
