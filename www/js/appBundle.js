@@ -92,13 +92,15 @@ eventApp
 });
 /// <reference path="../typings/angularjs/angular.d.ts" />
 var HomeController = (function () {
-    function HomeController(servAuth, $ionicLoading, eventServ) {
-        //this.testAuthRoute(); 
+    function HomeController(servAuth, $ionicLoading, eventServ, perform) {
         this.servAuth = servAuth;
         this.$ionicLoading = $ionicLoading;
         this.eventServ = eventServ;
+        this.perform = perform;
         this.header = "My Events";
         this.Zipcode = "347";
+        //this.testAuthRoute(); 
+        this.perform.setStart();
         this.getUserEvents();
     }
     ;
@@ -124,12 +126,16 @@ var HomeController = (function () {
             console.log(response);
             _this.events = response.data;
             _this.$ionicLoading.hide();
+            _this.perform.setEnd();
+            console.log(_this.perform.getTimeLoading());
         }, function (error) {
             console.log(error);
             _this.$ionicLoading.hide();
+            _this.perform.setEnd();
+            console.log(_this.perform.getTimeLoading());
         });
     };
-    HomeController.AngularDependencies = ['AuthService', '$ionicLoading', 'EventService', HomeController];
+    HomeController.AngularDependencies = ['AuthService', '$ionicLoading', 'EventService', 'PerformanceService', HomeController];
     return HomeController;
 }());
 eventApp.controller('HomeController', HomeController.AngularDependencies);
@@ -157,13 +163,18 @@ var SearchController = (function () {
     SearchController.prototype.findOrCreateEvent = function (yelp_id) {
         var _this = this;
         if (this.servAuth.userLoggedIn()) {
+            this.$ionicLoading.show({
+                template: 'RSVPing you to this place.'
+            });
             this.eventService.findOrCreateEvent({
                 yelp_id: yelp_id,
                 user_id: this.servAuth.getUserInfo().id
             }).then(function (data) {
                 console.log(data);
+                _this.$ionicLoading.hide();
                 _this.$location.path('/#/tab/home');
             }, function (error) {
+                _this.$ionicLoading.hide();
                 console.log(error);
             });
         }
@@ -336,4 +347,20 @@ var AuthService = (function () {
     return AuthService;
 }());
 eventApp.service('AuthService', AuthService.angularDependencies);
+var PerformanceService = (function () {
+    function PerformanceService() {
+    }
+    PerformanceService.prototype.setStart = function () {
+        this.startTime = Date.now();
+    };
+    PerformanceService.prototype.setEnd = function () {
+        this.endTime = Date.now();
+    };
+    PerformanceService.prototype.getTimeLoading = function () {
+        return "Page Load Time: " + (this.endTime - this.startTime) / 1000 + " seconds";
+    };
+    PerformanceService.angularDependencies = [PerformanceService];
+    return PerformanceService;
+}());
+eventApp.service('PerformanceService', PerformanceService.angularDependencies);
 //# sourceMappingURL=appBundle.js.map

@@ -20,6 +20,7 @@
     "source/controllers/AuthController.ts", 
     "source/controllers/AccountController.ts", 
     "source/services/EventService.ts", 
-    "source/services/AuthService.ts"
+    "source/services/AuthService.ts", 
+    "source/services/PerformanceService.ts"
   ]
 }

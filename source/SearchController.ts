@@ -28,15 +28,20 @@ class SearchController {
     
     public findOrCreateEvent(yelp_id: string) {
         if(this.servAuth.userLoggedIn()) {
+            this.$ionicLoading.show({
+                 template: 'RSVPing you to this place.'
+            }); 
             this.eventService.findOrCreateEvent({
                 yelp_id: yelp_id, 
                 user_id: this.servAuth.getUserInfo().id
             }).then(
                 (data) => {
                     console.log(data);
+                    this.$ionicLoading.hide(); 
                     this.$location.path('/#/tab/home');    
              }, 
                 (error) => {
+                    this.$ionicLoading.hide(); 
                     console.log(error); }
                 );
         } else {

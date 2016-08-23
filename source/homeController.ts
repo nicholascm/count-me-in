@@ -2,12 +2,12 @@
 
  class HomeController {
 
-        public static AngularDependencies = ['AuthService', '$ionicLoading','EventService', HomeController];
+        public static AngularDependencies = ['AuthService', '$ionicLoading','EventService','PerformanceService', HomeController];
 
-        constructor(private servAuth: AuthService, private $ionicLoading, private eventServ: EventService) {
+        constructor(private servAuth: AuthService, private $ionicLoading, private eventServ: EventService, private perform: PerformanceService) {
             
             //this.testAuthRoute(); 
-
+            this.perform.setStart(); 
             this.getUserEvents(); 
         }; 
 
@@ -42,10 +42,14 @@
                     console.log(response); 
                     this.events = response.data; 
                     this.$ionicLoading.hide(); 
+                    this.perform.setEnd(); 
+                    console.log(this.perform.getTimeLoading()); 
                 }, 
                 error => {
                     console.log(error)
                     this.$ionicLoading.hide(); 
+                    this.perform.setEnd(); 
+                    console.log(this.perform.getTimeLoading()); 
                 }
             );
         }
