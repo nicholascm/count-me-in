@@ -1,6 +1,9 @@
 ﻿<ion-view view-title="Home" cache-view="false"> 
     <ion-content>
-        <h3 class="padding text-center">Places in {{Ctrl.Zipcode}}</h3>
+        <h4 class="padding text-center">Places You're Headed Today</h3>
+        
+        <!-- could switch to below commented out control if doing attending status in future --> 
+        <!--
         <ion-list>
             <ion-item ng-repeat="event in Ctrl.events">
                 <ion-option-button ng-click="Ctrl.updateStatusOnEvent(event.id, 'Going')" class="button-balanced">Yes</ion-option-button>
@@ -15,14 +18,26 @@
                     
               </ion-item> 
         </ion-list>
-
-        <p class = "text-center" ng-show="Ctrl.events.length == 0">You're not going anywhere! Find somewhere to go!</p>
-
-                <a href = "#/tab/home/search" class="button button-block button-balanced">
+        --> 
+        <div class = "card" ng-repeat="event in Ctrl.events">
+            <div class = "item item-avatar">
+                <img src = "{{event.information.image_url}}">
+                <h2>{{event.information.name}}</h2>
+                <p>{{event.information.display_phone}}</p>
+                <span class="badge badge-balanced">{{event.attendees.length}} going</span>
+                </div>
+              <div class = "item item-body"> 
+                 <p>{{event.information.location.city}}, {{event.information.location.state_code}}</p>
+                 <p>The people said: {{event.information.snippet_text}}</p> 
+                 <!--<a>Attendees</a> -->
+                </div>       
+        </div> 
+        <div class = "text-center">
+        <p ng-show="Ctrl.events.length == 0">You're not going anywhere! Find somewhere to go!</p>
+        <a href = "#/tab/home/search" class="button button-balanced">
                    Go Somewhere Else
                 </a>
-
-
+        </div> 
     </ion-content>
 
 </ion-view>

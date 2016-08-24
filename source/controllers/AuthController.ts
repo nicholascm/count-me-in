@@ -11,12 +11,25 @@ class AuthController {
     public password: string; 
 
     private signup() {
+        this.$ionicLoading.show({
+            template: "Signing you up!"
+        })
         this.servAuth.signup({
             name: this.name, 
             email: this.username, 
             password: this.password
-        }).then(() => alert("success"), () => alert("failure")); 
+        }).then((response) => {
+            this.$ionicLoading.hide(); 
+            console.log('success', response); 
+            this.responseMessage = "Successful account creation, now just click sign in!";
+        }, (error) => {
+            this.$ionicLoading.hide(); 
+            console.log('failure', error); 
+            this.responseMessage = error.data.errors[0]; 
+        });  
     }
+
+    public responseMessage : string; 
 
     private login() {
         this.$ionicLoading.show({
@@ -35,7 +48,9 @@ class AuthController {
                 this.$location.path('/#/tab/home'); 
             }, 
             (e)=>  {
-                console.log('fail', e); 
+                console.log('fail', e);
+                let filteredError = e.data.error.replace('_', ' '); 
+                this.responseMessage = filteredError; 
                 this.$ionicLoading.hide(); 
             });
     }

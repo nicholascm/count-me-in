@@ -217,11 +217,23 @@ var AuthController = (function () {
         this.$location = $location;
     }
     AuthController.prototype.signup = function () {
+        var _this = this;
+        this.$ionicLoading.show({
+            template: "Signing you up!"
+        });
         this.servAuth.signup({
             name: this.name,
             email: this.username,
             password: this.password
-        }).then(function () { return alert("success"); }, function () { return alert("failure"); });
+        }).then(function (response) {
+            _this.$ionicLoading.hide();
+            console.log('success', response);
+            _this.responseMessage = "Successful account creation, now just sign in!";
+        }, function (error) {
+            _this.$ionicLoading.hide();
+            console.log('failure', error);
+            _this.responseMessage = error.data.errors[0];
+        });
     };
     AuthController.prototype.login = function () {
         var _this = this;
@@ -239,6 +251,8 @@ var AuthController = (function () {
             _this.$location.path('/#/tab/home');
         }, function (e) {
             console.log('fail', e);
+            var filteredError = e.data.error.replace('_', ' ');
+            _this.responseMessage = filteredError;
             _this.$ionicLoading.hide();
         });
     };
@@ -249,10 +263,18 @@ eventApp.controller('AuthController', AuthController.AngularDependencies);
 var AccountController = (function () {
     function AccountController(servAuth) {
         this.servAuth = servAuth;
+        this.getUserInfo();
     }
+    AccountController.prototype.getUserInfo = function () {
+        console.log(this.servAuth.getUserInfo());
+        this.user = this.servAuth.getUserInfo();
+    };
     AccountController.prototype.logOutCurrentUser = function () {
         this.servAuth.logout();
         console.log(this.servAuth.getToken());
+    };
+    AccountController.prototype.userLoggedIn = function () {
+        return this.servAuth.userLoggedIn() ? true : false;
     };
     AccountController.AngularDependencies = ['AuthService', AccountController];
     return AccountController;
@@ -305,7 +327,7 @@ var AuthService = (function () {
         });
     };
     AuthService.prototype.logout = function () {
-        this.$localStorage.token = "";
+        this.$localStorage.user = "";
     };
     AuthService.prototype.signup = function (credentials) {
         return this.$http({

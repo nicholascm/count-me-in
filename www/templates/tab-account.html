@@ -1,12 +1,9 @@
 <ion-view view-title="Account">
   <ion-content>
-    <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
-    </ion-list>
-    <button class="button button-block button-assertive" ng-click="Acct.logOutCurrentUser()">Log Me Out</button>
-    <a class="button button-block button-positiveive" href="/#/auth">Sign In/Sign Up</a>
-
+    <div class = "text-center padding"> 
+    <button ng-if = "Acct.userLoggedIn()" class="button button-assertive" ng-click="Acct.logOutCurrentUser()">Log Me Out</button>
+    <a ng-if = "!Acct.userLoggedIn()" class="button button-positive" href="/#/auth">Sign In/Sign Up</a>
+    <p ng-if="Acct.userLoggedIn()" class = "padding" >Currently logged in as {{Acct.user.email}} ({{Acct.user.name}})</p>
+    </div>
   </ion-content>
 </ion-view>

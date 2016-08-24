@@ -23,7 +23,7 @@ class AuthService {
     }
 
     public logout() {
-        this.$localStorage.token = ""; 
+        this.$localStorage.user = ""; 
     }
 
     public signup(credentials: IUser) {
