@@ -3,7 +3,9 @@ class AccountController {
     public static AngularDependencies = ['AuthService', AccountController]; 
 
     constructor(private servAuth: AuthService) {
-        this.getUserInfo(); 
+        if (this.servAuth.userLoggedIn()) {
+            this.getUserInfo(); 
+        }
     }
 
     public user; 

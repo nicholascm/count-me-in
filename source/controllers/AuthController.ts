@@ -16,7 +16,7 @@ class AuthController {
         })
         this.servAuth.signup({
             name: this.name, 
-            email: this.username, 
+            email: this.username.toLowerCase(), 
             password: this.password
         }).then((response) => {
             this.$ionicLoading.hide(); 
@@ -37,14 +37,13 @@ class AuthController {
         }); 
         this.servAuth.login({
             name: this.name, 
-            email: this.username, 
+            email: this.username.toLowerCase(), 
             password: this.password
         }).then(
             (data) => {
                 this.$ionicLoading.hide(); 
                 console.log('success', data); 
                 this.servAuth.storeUser(data); 
-
                 this.$location.path('/#/tab/home'); 
             }, 
             (e)=>  {

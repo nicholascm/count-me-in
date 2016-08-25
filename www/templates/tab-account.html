@@ -1,9 +1,9 @@
-<ion-view view-title="Account">
+<ion-view view-title="Account" cache-view="false">
   <ion-content>
     <div class = "text-center padding"> 
+      <p ng-if="Acct.userLoggedIn()" class = "padding" >Currently logged in as {{Acct.user.email}} ({{Acct.user.name}})</p>
     <button ng-if = "Acct.userLoggedIn()" class="button button-assertive" ng-click="Acct.logOutCurrentUser()">Log Me Out</button>
     <a ng-if = "!Acct.userLoggedIn()" class="button button-positive" href="/#/auth">Sign In/Sign Up</a>
-    <p ng-if="Acct.userLoggedIn()" class = "padding" >Currently logged in as {{Acct.user.email}} ({{Acct.user.name}})</p>
     </div>
   </ion-content>
 </ion-view>

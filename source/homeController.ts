@@ -7,8 +7,10 @@
         constructor(private servAuth: AuthService, private $ionicLoading, private eventServ: EventService, private perform: PerformanceService) {
             
             //this.testAuthRoute(); 
-            this.perform.setStart(); 
-            this.getUserEvents(); 
+            this.perform.setStart();
+            if (this.servAuth.userLoggedIn()) {
+                this.getUserEvents(); 
+            }
         }; 
 
         private header: string = "My Events";
@@ -19,7 +21,9 @@
             let eventToUpdate = this.events.filter((event) => event.id == id); 
             eventToUpdate[0].status = status; 
         }
-
+        private userLoggedIn() {
+            this.servAuth.userLoggedIn() ? true : false; 
+        }
         private testAuthRoute() {
             if(this.servAuth.userLoggedIn()) {
             console.log(this.servAuth.getToken()); 

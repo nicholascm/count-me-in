@@ -55,7 +55,7 @@ class SearchController {
         }); 
         
         this.eventService.getEvents({
-                search_term: "burgers", 
+                search_term: "bars", 
                 location: this.searchText 
                 }).then(
                 (response: ISearchResults)  => { 

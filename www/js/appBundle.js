@@ -101,12 +101,17 @@ var HomeController = (function () {
         this.Zipcode = "347";
         //this.testAuthRoute(); 
         this.perform.setStart();
-        this.getUserEvents();
+        if (this.servAuth.userLoggedIn()) {
+            this.getUserEvents();
+        }
     }
     ;
     HomeController.prototype.updateStatusOnEvent = function (id, status) {
         var eventToUpdate = this.events.filter(function (event) { return event.id == id; });
         eventToUpdate[0].status = status;
+    };
+    HomeController.prototype.userLoggedIn = function () {
+        this.servAuth.userLoggedIn() ? true : false;
     };
     HomeController.prototype.testAuthRoute = function () {
         if (this.servAuth.userLoggedIn()) {
@@ -188,7 +193,7 @@ var SearchController = (function () {
             template: 'Hold up while we search the globe...'
         });
         this.eventService.getEvents({
-            search_term: "burgers",
+            search_term: "bars",
             location: this.searchText
         }).then(function (response) {
             console.log(response.data);
@@ -223,12 +228,12 @@ var AuthController = (function () {
         });
         this.servAuth.signup({
             name: this.name,
-            email: this.username,
+            email: this.username.toLowerCase(),
             password: this.password
         }).then(function (response) {
             _this.$ionicLoading.hide();
             console.log('success', response);
-            _this.responseMessage = "Successful account creation, now just sign in!";
+            _this.responseMessage = "Successful account creation, now just click sign in!";
         }, function (error) {
             _this.$ionicLoading.hide();
             console.log('failure', error);
@@ -242,7 +247,7 @@ var AuthController = (function () {
         });
         this.servAuth.login({
             name: this.name,
-            email: this.username,
+            email: this.username.toLowerCase(),
             password: this.password
         }).then(function (data) {
             _this.$ionicLoading.hide();
@@ -263,7 +268,9 @@ eventApp.controller('AuthController', AuthController.AngularDependencies);
 var AccountController = (function () {
     function AccountController(servAuth) {
         this.servAuth = servAuth;
-        this.getUserInfo();
+        if (this.servAuth.userLoggedIn()) {
+            this.getUserInfo();
+        }
     }
     AccountController.prototype.getUserInfo = function () {
         console.log(this.servAuth.getUserInfo());

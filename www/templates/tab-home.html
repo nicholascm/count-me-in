@@ -34,8 +34,9 @@
         </div> 
         <div class = "text-center">
         <p ng-show="Ctrl.events.length == 0">You're not going anywhere! Find somewhere to go!</p>
+        <p ng-show="Ctrl.userLoggedIn() == false">You must log in to save places you're going.</p>
         <a href = "#/tab/home/search" class="button button-balanced">
-                   Go Somewhere Else
+                   Find Places to Go
                 </a>
         </div> 
     </ion-content>
